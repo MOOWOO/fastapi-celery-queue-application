@@ -23,7 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.get("/api/{word}")
 async def root(word: str):
     task_name = "worker.celery_worker.long_task"
@@ -33,7 +32,6 @@ async def root(word: str):
 
     return {"task_id": task.id}
 
-
 @app.get("/api/{task_id}/status")
 async def status(task_id: str) -> dict:
     res = AsyncResult(task_id)
@@ -41,3 +39,44 @@ async def status(task_id: str) -> dict:
         return {'state': celery.states.SUCCESS,
                 'result': res.result}
     return {'state': res.state, }
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    # Get prompt from client
+    prompt = app.request.json.get('prompt')
+    task = celery_app.send_task("generate_text", args=[prompt])
+    # Return task id
+    return {"task_id": task.id}
+
+@app.get("/chat/{task_id}/status")
+async def status(task_id: str) -> dict:
+    res = AsyncResult(task_id)
+    if res.state == celery.states.SUCCESS:
+        return {'state': celery.states.SUCCESS,
+                'data': res.result['choices'][0]['text']}
+    return {'state': res.state}
+
+@app.route('/image_chat', methods=['POST'])
+def image_chat():
+    # Get prompt from client
+    prompt = app.request.json.get('prompt', "cartoon cat")
+    number = app.request.json.get('number', 1)
+    image_size = app.request.json.get('image_size', 1024)
+    image_width = app.request.json.get('image_width', 1024)
+
+    # Run GPT-3 task asynchronously
+    task = celery_app.send_task("generate_image", args=[prompt, number, image_size, image_width])
+
+    # Return task id
+    return {"task_id": task.id}
+
+
+@app.route('/image/<task_id>', methods=['GET'])
+def image_result(task_id):
+    # Get task result
+    response = generate_image.AsyncResult(task_id).get()
+
+    # Return response
+    return jsonify({
+        "data": response
+    })
