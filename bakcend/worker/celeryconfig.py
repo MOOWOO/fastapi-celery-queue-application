@@ -16,7 +16,7 @@ imports = ('worker.celery_worker',)
 ## Using the database to store task state and results.
 result_backend = redis_url+'/0'
 
-task_annotations = {'tasks.add': {'rate_limit': '10/s'}}
+task_annotations = {'tasks.add': {'rate_limit': '5/s'}}
 
 task_queues = {
     'test-queue': {
