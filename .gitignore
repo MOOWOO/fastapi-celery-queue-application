@@ -2,7 +2,6 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=osx,python,node
 
 ### Connection test ###
-test
 __pycache__
 
 ### Node ###

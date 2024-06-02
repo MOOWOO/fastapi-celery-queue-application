@@ -1,6 +1,4 @@
 import asyncio
-
-from celery import current_task
 from celery.utils.log import get_task_logger
 
 
