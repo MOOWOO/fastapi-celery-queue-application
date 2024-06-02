@@ -32,6 +32,8 @@ done
 # '-E' enables events so that you can monitor the worker.
 celery -A worker.celery_app worker --loglevel=INFO -E &
 
+sleep 5.0
+
 # Verify worker status
 celery -A worker.celery_app status
 

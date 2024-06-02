@@ -24,11 +24,17 @@ task_queues = {
     }
 }
 task_routes = {
-    "worker.celery_worker.long_task": "test-queue"
+    "worker.celery_worker.long_task": "test-queue",
+    "worker.celery_worker.generate_text": "test-queue",
+    "worker.celery_worker.generate_image": "test-queue",
 }
 task_track_started = True
 
 worker_concurrency = 1
-worker_prefetch_multiplier = 3
-worker_max_tasks_per_child = 10000
-
+worker_prefetch_multiplier = 2
+worker_max_tasks_per_child = 500
+task_serializer = 'json'
+result_serializer = 'json'
+accept_content = ['json']
+timezone = 'UTC'
+enable_utc = True

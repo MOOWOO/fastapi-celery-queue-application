@@ -7,11 +7,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from worker.celery_app import celery_app
-from worker.celery_worker import long_task
+from worker.celery_worker import long_task, generate_text, generate_image
 
 if TYPE_CHECKING:
     from celery import Task
     long_task: Task
+    generate_text: Task
+    generate_image: Task
 
 app = FastAPI()
 
@@ -40,39 +42,43 @@ async def status(task_id: str) -> dict:
                 'result': res.result}
     return {'state': res.state, }
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    # Get prompt from client
-    prompt = app.request.json.get('prompt')
-    task = celery_app.send_task("generate_text", args=[prompt])
+@app.post('/api/chat')
+def chat(prompt: str = "Hello ai"):
+  task = generate_text(prompt)
+  # Return task id
+  return {"result": task}
+
+@app.post('/api/async/chat')
+async def chat(prompt: str = "Hello ai"):
+    task_name = "worker.celery_worker.generate_text"
+    # prompt = app.request.json.get('prompt')
+    task = celery_app.send_task(task_name, args=[prompt])
     # Return task id
     return {"task_id": task.id}
 
-@app.get("/chat/{task_id}/status")
+@app.get("/api/async/chat/{task_id}/status")
 async def status(task_id: str) -> dict:
     res = AsyncResult(task_id)
     if res.state == celery.states.SUCCESS:
         return {'state': celery.states.SUCCESS,
-                'data': res.result['choices'][0]['text']}
+                'data': res.result}
     return {'state': res.state}
 
-@app.route('/image_chat', methods=['POST'])
-def image_chat():
-    # Get prompt from client
-    prompt = app.request.json.get('prompt', "cartoon cat")
-    number = app.request.json.get('number', 1)
-    image_size = app.request.json.get('image_size', 1024)
-    image_width = app.request.json.get('image_width', 1024)
+@app.post('/api/image_chat')
+def image_chat(prompt:str = "cat", image_size:str = "1024", image_width:str = "1024"):
+  task = generate_image(prompt, image_size, image_width)
+  # Return task id
+  return {"result": task}
 
-    # Run GPT-3 task asynchronously
-    task = celery_app.send_task("generate_image", args=[prompt, number, image_size, image_width])
-
+@app.post('/api/async/image_chat')
+async def image_chat(prompt:str = "cat", image_size:str = "1024", image_width:str = "1024"):
+    task_name = "worker.celery_worker.generate_image"
+    task = celery_app.send_task(task_name, args=[prompt, image_size, image_width])
     # Return task id
     return {"task_id": task.id}
 
-
-@app.get("/image/{task_id}/status")
-def image_result(task_id: str):
+@app.get("/api/async/image/{task_id}/status")
+async def image_result(task_id: str):
     # Get task result
     res = AsyncResult(task_id)
     if res.state == celery.states.SUCCESS:

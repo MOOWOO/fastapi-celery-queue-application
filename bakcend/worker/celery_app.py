@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from celery import Celery
+from celery import Celery, shared_task
 
 # Load environment variables from the .env file
 load_dotenv()
