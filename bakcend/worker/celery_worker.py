@@ -5,8 +5,8 @@ from fastapi import requests
 import openai
 from .celery_app import celery_app
 
-OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
-openai.api_key = OPEN_AI_KEY
+open_ai_key = os.getenv("OPEN_AI_KEY")
+openai.api_key = open_ai_key
 logger = get_task_logger(__name__)
 
 @celery_app.task
