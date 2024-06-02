@@ -71,12 +71,11 @@ def image_chat():
     return {"task_id": task.id}
 
 
-@app.route('/image/<task_id>', methods=['GET'])
-def image_result(task_id):
+@app.get("/image/{task_id}/status")
+def image_result(task_id: str):
     # Get task result
-    response = generate_image.AsyncResult(task_id).get()
-
-    # Return response
-    return jsonify({
-        "data": response
-    })
+    res = AsyncResult(task_id)
+    if res.state == celery.states.SUCCESS:
+        return {'state': celery.states.SUCCESS,
+                'data': res.result}
+    return {'state': res.state}
