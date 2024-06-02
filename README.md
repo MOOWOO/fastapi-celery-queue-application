@@ -2,7 +2,7 @@
 
 ![alt text](fast-api-celery.png)
 
-Sample application utilizing FastAPI, Celery with RabbitMQ for task queue. RabbitMQ is also used as Celery backend and optional flower for monitoring the Celery tasks.
+Sample application utilizing FastAPI, Celery with Redis(in memory DB) for task queue. RabbitMQ is also used as Celery backend and optional flower for monitoring the Celery tasks.
 
 ### FastAPI
 
