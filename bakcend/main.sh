@@ -43,4 +43,4 @@ celery -A worker.celery_app flower --broker=$REDIS_URL --port=5555 &
 
 # Start a Uvicorn server for an ASGI application defined in 'main:app'.
 # '--reload' enables auto-reloading of the server when code changes are detected.
-uvicorn main:app --reload
+uvicorn main:app --reload --no-server-header
