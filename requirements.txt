@@ -1,8 +1,11 @@
-fastapi==0.73.0
+fastapi
 uvicorn[standard]==0.17.4
 celery
-flower==1.0.0
-httpx ==0.21.1
+flower
+httpx
 pydantic==1.10.11
 kombu
 openai
+duckduckgo-search
+phidata
+redis

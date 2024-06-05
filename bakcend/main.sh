@@ -31,6 +31,7 @@ done
 # Start a Celery worker with the application defined in 'worker.celery_app'.
 # '--loglevel=INFO' sets the logging level to INFO.
 # '-E' enables events so that you can monitor the worker.
+# celery -A worker.celery_app worker --loglevel=INFO -E &
 celery -A worker.celery_app worker -P threads --loglevel=INFO -E &
 celery -A worker.celery_app beat & 
 sleep 5.0
