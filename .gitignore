@@ -1,6 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/osx,python,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=osx,python,node
 
+celerybeat-schedule.db
+
 ### Connection test ###
 __pycache__
 
