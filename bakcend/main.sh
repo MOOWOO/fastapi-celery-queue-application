@@ -41,8 +41,7 @@ celery -A worker.celery_app status
 
 # Start Flower to monitor the Celery workers.
 # '--port=5555' sets the port for the Flower monitoring tool.
-celery -A worker.celery_app flower --broker=$REDIS_URL --port=5555 &
-
+celery --broker=$REDIS_URL flower --port=5555 &
 # Start a Uvicorn server (port 8000) for an ASGI application defined in 'main:app'.
 # '--reload' enables auto-reloading of the server when code changes are detected.
 # fastapi docs http://localhost:8000/docs

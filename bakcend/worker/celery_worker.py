@@ -4,12 +4,14 @@ from celery.utils.log import get_task_logger
 from openai import OpenAI
 from .celery_app import celery_app
 from celery import shared_task
+from tasks.m import call
 
 client = OpenAI(
     api_key = os.getenv("OPENAI_API_KEY"),
 )
 
 logger = get_task_logger(__name__)
+call()
 
 @celery_app.task
 def long_task(word: str) -> dict:
@@ -48,3 +50,10 @@ def generate_image(prompt, image_size, image_width):
     )
     image_url = response.data[0].url
     return image_url
+
+# Assistant - Web_search
+# from phi.assistant import Assistant
+# from phi.tools.duckduckgo import DuckDuckGo
+
+# assistant = Assistant(tools=[DuckDuckGo()], show_tool_calls=True)
+# assistant.print_response("Whats happening in France?", markdown=True)
