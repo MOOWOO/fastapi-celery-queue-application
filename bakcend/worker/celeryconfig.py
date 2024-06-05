@@ -28,8 +28,10 @@ task_routes = {
     "worker.celery_worker.generate_text": "test-queue",
     "worker.celery_worker.generate_image": "test-queue",
 }
-task_track_started = True
 
+result_persistent = True
+result_expires = 3600 # seconds
+task_track_started = True
 worker_concurrency = 1
 worker_prefetch_multiplier = 2
 worker_max_tasks_per_child = 500
