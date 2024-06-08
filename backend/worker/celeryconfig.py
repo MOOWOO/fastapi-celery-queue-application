@@ -27,6 +27,7 @@ task_routes = {
     "worker.celery_worker.long_task": "test-queue",
     "worker.celery_worker.generate_text": "test-queue",
     "worker.celery_worker.generate_image": "test-queue",
+    "worker.celery_worker.assistant_web_search": "test-queue",
 }
 
 result_persistent = True

@@ -4,14 +4,13 @@ from celery.utils.log import get_task_logger
 from openai import OpenAI
 from .celery_app import celery_app
 from celery import shared_task
-from tasks.m import call
+import tasks.task as task
 
 client = OpenAI(
     api_key = os.getenv("OPENAI_API_KEY"),
 )
 
 logger = get_task_logger(__name__)
-call()
 
 @celery_app.task
 def long_task(word: str) -> dict:
@@ -20,8 +19,8 @@ def long_task(word: str) -> dict:
     return {'result': word}
 
 async def long_async_task():
-    for i in range(10):
-        await asyncio.sleep(1)
+  for i in range(1):
+    await asyncio.sleep(1)
 
 # OPEN AI DEFAULT - generate_text
 @celery_app.task
@@ -51,9 +50,7 @@ def generate_image(prompt, image_size, image_width):
     image_url = response.data[0].url
     return image_url
 
-# Assistant - Web_search
-# from phi.assistant import Assistant
-# from phi.tools.duckduckgo import DuckDuckGo
-
-# assistant = Assistant(tools=[DuckDuckGo()], show_tool_calls=True)
-# assistant.print_response("Whats happening in France?", markdown=True)
+@celery_app.task
+def assistant_web_search(prompt: str):
+  res = asyncio.run(task.assistant_web_search(prompt))
+  return res

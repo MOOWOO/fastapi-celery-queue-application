@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from worker.celery_app import celery_app
-from worker.celery_worker import long_task, generate_text, generate_image
+from worker.celery_worker import *
 from pydantic import BaseModel
 
 class Chat(BaseModel):
@@ -23,6 +23,8 @@ if TYPE_CHECKING:
     long_task: Task
     generate_text: Task
     generate_image: Task
+    generate_image: Task
+    assistant_web_search: Task
 
 app = FastAPI()
 
@@ -65,14 +67,6 @@ async def chat(prompt: Chat):
     # Return task id
     return {"task_id": task.id}
 
-@app.get("/api/async/chat/{task_id}/status")
-async def status(task_id: str) -> dict:
-    res = AsyncResult(task_id)
-    if res.state == celery.states.SUCCESS:
-        return {'state': celery.states.SUCCESS,
-                'data': res.result}
-    return {'state': res.state}
-
 @app.post('/api/image_chat')
 def image_chat(image: Image):
   task = generate_image(image.prompt, image.image_size, image.image_width)
@@ -86,18 +80,15 @@ async def image_chat(image: Image):
     # Return task id
     return {"task_id": task.id}
 
-@app.get("/api/async/image/{task_id}/status")
-async def image_result(task_id: str):
-    # Get task result
-    res = AsyncResult(task_id)
-    if res.state == celery.states.SUCCESS:
-        return {'state': celery.states.SUCCESS,
-                'data': res.result}
-    return {'state': res.state}
-
-# RAG
-
 # WebSearch
+@app.post('/api/async/web_search')
+async def web_search(prompt: Chat):
+    task_name = "worker.celery_worker.assistant_web_search"
+    task = celery_app.send_task(task_name, args=[prompt.prompt])
+    # Return task id
+    return {"task_id": task.id}
+
+# RAG chat
 
 # AutoGPT
 
