@@ -5,7 +5,7 @@ flower
 httpx
 prefect
 pydantic
-#if Err: pip install -U pydantic
+#if Err manual install : pip install -U pydantic
 kombu
 openai
 duckduckgo-search
