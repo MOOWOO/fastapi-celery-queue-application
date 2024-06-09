@@ -11,3 +11,7 @@ openai
 duckduckgo-search
 phidata
 redis
+pgvector
+pypdf
+psycopg[binary]
+sqlalchemy

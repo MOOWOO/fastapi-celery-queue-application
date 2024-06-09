@@ -22,7 +22,7 @@ async def long_async_task():
   for i in range(1):
     await asyncio.sleep(1)
 
-# OPEN AI DEFAULT - generate_text
+# OPEN AI DEFAULT - generate_text - for test
 @celery_app.task
 def generate_text(prompt: str):
   completion = client.chat.completions.create(
@@ -37,7 +37,7 @@ def generate_text(prompt: str):
   #logger.info(completion)
   return completion.choices[0].message.content
 
-# OPEN AI DEFAULT - generate_image
+# OPEN AI DEFAULT - generate_image - for test
 @celery_app.task
 def generate_image(prompt, image_size, image_width):
     response = client.images.generate(

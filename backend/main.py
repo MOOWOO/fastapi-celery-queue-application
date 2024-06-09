@@ -81,7 +81,7 @@ async def image_chat(image: Image):
     return {"task_id": task.id}
 
 # WebSearch
-@app.post('/api/async/web_search')
+@app.post('/api/async/assistant/web_search')
 async def web_search(prompt: Chat):
     task_name = "worker.celery_worker.assistant_web_search"
     task = celery_app.send_task(task_name, args=[prompt.prompt])
